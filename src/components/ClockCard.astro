@@ -1,0 +1,51 @@
+---
+---
+
+<section class="clock glass">
+  <div class="time" id="clock-time">00:00</div>
+  <div class="sec" id="clock-sec">00</div>
+</section>
+
+<script is:inline>
+  (function () {
+    const timeEl = document.getElementById('clock-time');
+    const secEl = document.getElementById('clock-sec');
+    if (!timeEl || !secEl) return;
+    function pad(n) {
+      return n < 10 ? '0' + n : '' + n;
+    }
+    function tick() {
+      const d = new Date();
+      timeEl.textContent = pad(d.getHours()) + ':' + pad(d.getMinutes());
+      secEl.textContent = pad(d.getSeconds());
+    }
+    tick();
+    setInterval(tick, 1000);
+  })();
+</script>
+
+<style>
+  .clock {
+    padding: 22px 26px;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 8px;
+    height: 100%;
+  }
+  .time {
+    font-family: var(--mono);
+    font-size: 3rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+  .sec {
+    font-family: var(--mono);
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+</style>

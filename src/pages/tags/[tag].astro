@@ -1,0 +1,39 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { getPublishedPosts, getTagCounts, tagSlug } from '../../utils/posts';
+
+export const getStaticPaths = (async () => {
+  const tags = await getTagCounts();
+  const posts = await getPublishedPosts();
+  return tags.map(({ tag }) => ({
+    params: { tag: tagSlug(tag) },
+    props: {
+      tag,
+      posts: posts.filter((p) => p.data.tags.includes(tag)),
+    },
+  }));
+}) satisfies GetStaticPaths;
+
+const { tag, posts } = Astro.props;
+---
+
+<BaseLayout title={`标签: ${tag}`} description={`标签 ${tag} 下的文章`}>
+  <main class="page-main container">
+    <h1 class="page-title">#{tag}</h1>
+    <p class="page-subtitle">共 {posts.length} 篇 · <a href="/tags">← 所有标签</a></p>
+
+    <div class="list">
+      {posts.map((post) => <ArticleCard post={post} />)}
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+</style>

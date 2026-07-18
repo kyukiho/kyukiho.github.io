@@ -1,0 +1,176 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Sidebar from '../components/Sidebar.astro';
+import GreetingCard from '../components/GreetingCard.astro';
+import ClockCard from '../components/ClockCard.astro';
+import CalendarCard from '../components/CalendarCard.astro';
+import SocialLinks from '../components/SocialLinks.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import { getPublishedPosts } from '../utils/posts';
+import { HOME_LATEST_COUNT } from '../consts';
+
+const posts = await getPublishedPosts();
+const latest = posts.slice(0, HOME_LATEST_COUNT);
+---
+
+<BaseLayout showHeader={false}>
+  <main class="home container">
+    <div class="bento">
+      <div class="area-sidebar">
+        <Sidebar />
+      </div>
+
+      <div class="area-greeting">
+        <GreetingCard />
+      </div>
+
+      <div class="area-clock">
+        <ClockCard />
+      </div>
+
+      <div class="area-calendar">
+        <CalendarCard />
+      </div>
+
+      <div class="area-latest">
+        <section class="latest glass">
+          <div class="latest-head">
+            <h2>最新文章</h2>
+            <a href="/blog" class="more">全部 →</a>
+          </div>
+          {
+            latest.length === 0 ? (
+              <p class="empty">还没有文章，快去写第一篇吧～</p>
+            ) : (
+              <ul class="latest-list">
+                {latest.map((post) => (
+                  <li>
+                    <a href={`/blog/${post.id}`} class="latest-item">
+                      <span class="l-title">{post.data.title}</span>
+                      <span class="l-date">
+                        <FormattedDate date={post.data.date} short />
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )
+          }
+        </section>
+      </div>
+
+      <div class="area-social">
+        <SocialLinks />
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .home {
+    padding: 40px 20px 60px;
+  }
+  .bento {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr 1fr;
+    grid-template-areas:
+      'sidebar greeting clock'
+      'sidebar greeting calendar'
+      'latest  latest   calendar'
+      'latest  latest   social';
+    gap: 18px;
+    align-items: stretch;
+  }
+  .area-sidebar {
+    grid-area: sidebar;
+  }
+  .area-greeting {
+    grid-area: greeting;
+  }
+  .area-clock {
+    grid-area: clock;
+  }
+  .area-calendar {
+    grid-area: calendar;
+  }
+  .area-latest {
+    grid-area: latest;
+  }
+  .area-social {
+    grid-area: social;
+  }
+
+  .latest {
+    padding: 22px 24px;
+    height: 100%;
+  }
+  .latest-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .latest-head h2 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+  }
+  .more {
+    font-size: 0.85rem;
+    color: var(--accent-strong);
+  }
+  .latest-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .latest-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 11px 8px;
+    border-bottom: 1px solid var(--divider);
+    color: var(--text);
+    border-radius: 8px;
+    transition: background 0.2s ease;
+  }
+  .latest-list li:last-child .latest-item {
+    border-bottom: none;
+  }
+  .latest-item:hover {
+    background: var(--accent-soft);
+  }
+  .l-title {
+    font-size: 0.98rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .l-date {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .empty {
+    color: var(--text-muted);
+    text-align: center;
+    padding: 20px 0;
+  }
+
+  @media (max-width: 900px) {
+    .bento {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        'greeting'
+        'clock'
+        'calendar'
+        'sidebar'
+        'latest'
+        'social';
+    }
+  }
+</style>

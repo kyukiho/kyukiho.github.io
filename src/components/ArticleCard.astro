@@ -1,0 +1,74 @@
+---
+import FormattedDate from './FormattedDate.astro';
+import { tagSlug } from '../utils/posts';
+import type { Post } from '../utils/posts';
+
+interface Props {
+  post: Post;
+}
+const { post } = Astro.props;
+const { title, date, description, tags, category } = post.data;
+---
+
+<article class="article-card glass">
+  <a href={`/blog/${post.id}`} class="card-link">
+    <h2 class="card-title">{title}</h2>
+  </a>
+  <div class="card-meta">
+    <FormattedDate date={date} />
+    {category && <span class="dot">·</span>}
+    {category && <span class="category">{category}</span>}
+  </div>
+  {description && <p class="card-desc">{description}</p>}
+  {
+    tags.length > 0 && (
+      <div class="card-tags">
+        {tags.map((tag) => (
+          <a href={`/tags/${tagSlug(tag)}`} class="tag">
+            #{tag}
+          </a>
+        ))}
+      </div>
+    )
+  }
+</article>
+
+<style>
+  .article-card {
+    padding: 22px 24px;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .article-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 40px rgba(77, 184, 146, 0.2);
+  }
+  .card-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text);
+    transition: color 0.2s ease;
+  }
+  .card-link:hover .card-title {
+    color: var(--accent-strong);
+  }
+  .card-meta {
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .card-desc {
+    margin: 12px 0 0;
+    color: var(--text-soft);
+    font-size: 0.96rem;
+  }
+  .card-tags {
+    margin-top: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+</style>

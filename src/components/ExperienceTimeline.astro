@@ -1,0 +1,135 @@
+---
+interface Experience {
+  period: string;
+  city?: string;
+  company: string;
+  department?: string;
+  role: string;
+  current?: boolean;
+}
+
+interface Props {
+  experiences: Experience[];
+}
+
+const { experiences } = Astro.props;
+---
+
+<ul class="timeline">
+  {
+    experiences.map((exp) => (
+      <li class="item">
+        <span class={`dot${exp.current ? ' dot-current' : ''}`} aria-hidden="true" />
+        <div class="content">
+          <div class="meta">
+            {exp.period}
+            {exp.city && <span class="sep">·</span>}
+            {exp.city}
+          </div>
+          <div class="org">
+            <span class="company">{exp.company}</span>
+            {exp.department && <span class="dept"> · {exp.department}</span>}
+          </div>
+          <div class="role">{exp.role}</div>
+        </div>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .timeline {
+    list-style: none;
+    margin: 0.5em 0 0;
+    padding: 0;
+  }
+
+  .item {
+    position: relative;
+    padding: 18px 0 18px 30px;
+    border-bottom: 1px solid var(--divider);
+  }
+  .item:last-child {
+    border-bottom: none;
+    padding-bottom: 4px;
+  }
+
+  /* 贯穿竖线 */
+  .item::before {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--divider);
+  }
+  .item:first-child::before {
+    top: 22px;
+  }
+  .item:last-child::before {
+    bottom: auto;
+    height: 22px;
+  }
+
+  /* 圆点 */
+  .dot {
+    position: absolute;
+    left: 0;
+    top: 22px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    border: 2px solid var(--card-bg-solid);
+    z-index: 1;
+  }
+  .dot-current {
+    background: var(--accent-strong);
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .meta {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+  .meta .sep {
+    margin: 0 2px;
+  }
+
+  .org {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    color: var(--text);
+    font-size: 1.02rem;
+    line-height: 1.4;
+  }
+  .dept {
+    font-weight: 500;
+    color: var(--text-soft);
+  }
+
+  .role {
+    color: var(--text-soft);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 640px) {
+    .item {
+      padding: 14px 0 14px 26px;
+    }
+    .org {
+      font-size: 0.98rem;
+    }
+  }
+</style>

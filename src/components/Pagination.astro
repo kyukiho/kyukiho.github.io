@@ -1,0 +1,63 @@
+---
+interface Props {
+  currentPage: number;
+  lastPage: number;
+  prevUrl?: string;
+  nextUrl?: string;
+}
+const { currentPage, lastPage, prevUrl, nextUrl } = Astro.props;
+---
+
+{
+  lastPage > 1 && (
+    <nav class="pagination">
+      {prevUrl ? (
+        <a href={prevUrl} class="page-btn glass">
+          ← 上一页
+        </a>
+      ) : (
+        <span class="page-btn glass disabled">← 上一页</span>
+      )}
+      <span class="page-info">
+        {currentPage} / {lastPage}
+      </span>
+      {nextUrl ? (
+        <a href={nextUrl} class="page-btn glass">
+          下一页 →
+        </a>
+      ) : (
+        <span class="page-btn glass disabled">下一页 →</span>
+      )}
+    </nav>
+  )
+}
+
+<style>
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 36px;
+  }
+  .page-btn {
+    padding: 8px 18px;
+    border-radius: 999px;
+    color: var(--accent-strong);
+    font-size: 0.9rem;
+    transition: transform 0.15s ease;
+  }
+  a.page-btn:hover {
+    transform: translateY(-1px);
+    color: var(--accent-strong);
+  }
+  .page-btn.disabled {
+    color: var(--text-muted);
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .page-info {
+    color: var(--text-soft);
+    font-size: 0.9rem;
+  }
+</style>

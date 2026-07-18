@@ -1,0 +1,46 @@
+---
+import { SOCIAL_LINKS } from '../consts';
+---
+
+<section class="social glass">
+  {
+    SOCIAL_LINKS.map((s) => (
+      <a
+        href={s.href}
+        class="social-item"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={`--brand:${s.color}`}
+      >
+        {s.name}
+      </a>
+    ))
+  }
+</section>
+
+<style>
+  .social {
+    padding: 16px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    height: 100%;
+  }
+  .social-item {
+    padding: 8px 18px;
+    border-radius: 999px;
+    background: var(--card-bg-solid);
+    border: 1px solid var(--divider);
+    color: var(--text);
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: transform 0.15s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  .social-item:hover {
+    transform: translateY(-2px);
+    color: var(--brand);
+    border-color: var(--brand);
+  }
+</style>

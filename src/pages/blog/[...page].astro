@@ -1,0 +1,41 @@
+---
+import type { GetStaticPaths, Page } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import Pagination from '../../components/Pagination.astro';
+import { getPublishedPosts, type Post } from '../../utils/posts';
+import { PAGE_SIZE } from '../../consts';
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = await getPublishedPosts();
+  return paginate(posts, { pageSize: PAGE_SIZE });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props as { page: Page<Post> };
+---
+
+<BaseLayout title="文章" description="全部文章列表">
+  <main class="page-main container">
+    <h1 class="page-title">文章</h1>
+    <p class="page-subtitle">共 {page.total} 篇 · 第 {page.currentPage} / {page.lastPage} 页</p>
+
+    <div class="list">
+      {page.data.map((post) => <ArticleCard post={post} />)}
+    </div>
+
+    <Pagination
+      currentPage={page.currentPage}
+      lastPage={page.lastPage}
+      prevUrl={page.url.prev}
+      nextUrl={page.url.next}
+    />
+  </main>
+</BaseLayout>
+
+<style>
+  .list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+</style>

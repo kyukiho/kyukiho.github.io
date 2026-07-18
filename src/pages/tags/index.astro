@@ -1,0 +1,63 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getTagCounts, tagSlug } from '../../utils/posts';
+
+const tags = await getTagCounts();
+---
+
+<BaseLayout title="标签" description="全部标签分类">
+  <main class="page-main container">
+    <h1 class="page-title">标签</h1>
+    <p class="page-subtitle">共 {tags.length} 个标签</p>
+
+    <div class="tag-cloud glass">
+      {
+        tags.length === 0 ? (
+          <p class="empty">还没有标签。</p>
+        ) : (
+          tags.map(({ tag, count }) => (
+            <a href={`/tags/${tagSlug(tag)}`} class="tag-big">
+              #{tag}
+              <span class="count">{count}</span>
+            </a>
+          ))
+        )
+      }
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .tag-cloud {
+    padding: 26px 28px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .tag-big {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: var(--tag-bg);
+    color: var(--accent-strong);
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: transform 0.15s ease, background 0.2s ease;
+  }
+  .tag-big:hover {
+    transform: translateY(-2px);
+    background: var(--accent-soft);
+  }
+  .count {
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.75rem;
+    border-radius: 999px;
+    padding: 1px 8px;
+  }
+  .empty {
+    color: var(--text-muted);
+  }
+</style>

@@ -1,0 +1,72 @@
+---
+import { GREETING_NAME } from '../consts';
+---
+
+<section class="greeting glass">
+  <div class="moon">
+    <img src="/images/avatar.png" alt={GREETING_NAME} />
+  </div>
+  <div class="greet-text" id="greeting">你好呀</div>
+  <div class="greet-name">
+    I'm <span class="name">{GREETING_NAME}</span>, Nice to meet you!
+  </div>
+</section>
+
+<script is:inline>
+  (function () {
+    const el = document.getElementById('greeting');
+    if (!el) return;
+    const h = new Date().getHours();
+    let text = 'Good Night';
+    if (h >= 5 && h < 11) text = 'Good Morning';
+    else if (h >= 11 && h < 14) text = 'Good Noon';
+    else if (h >= 14 && h < 18) text = 'Good Afternoon';
+    else if (h >= 18 && h < 23) text = 'Good Evening';
+    el.textContent = text;
+  })();
+</script>
+
+<style>
+  .greeting {
+    padding: 34px 28px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 100%;
+  }
+  .moon {
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 40%, #fdf6c9, #f3e9a8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 46px;
+    margin-bottom: 8px;
+    box-shadow: 0 0 40px rgba(243, 233, 168, 0.6);
+    overflow: hidden;
+  }
+  .moon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .greet-text {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .greet-name {
+    font-size: 1.25rem;
+    color: var(--text-soft);
+  }
+  .greet-name .name {
+    color: var(--accent-strong);
+    font-weight: 700;
+    font-style: italic;
+  }
+</style>

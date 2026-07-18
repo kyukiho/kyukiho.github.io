@@ -1,0 +1,57 @@
+---
+import { getEntry, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ExperienceTimeline from '../components/ExperienceTimeline.astro';
+
+const entry = await getEntry('pages', 'about');
+if (!entry) {
+  throw new Error('缺少 src/content/pages/about.md');
+}
+const { Content } = await render(entry);
+const { experiences, contacts } = entry.data;
+---
+
+<BaseLayout title={entry.data.title} description={entry.data.description}>
+  <main class="page-main container">
+    <article class="post glass">
+      <div class="prose">
+        <Content />
+
+        {
+          experiences.length > 0 && (
+            <>
+              <h2>个人经历</h2>
+              <ExperienceTimeline experiences={experiences} />
+            </>
+          )
+        }
+
+        {
+          contacts.length > 0 && (
+            <>
+              <h2>联系我</h2>
+              <ul>
+                {contacts.map((c) => (
+                  <li>
+                    {c.label}：<a href={c.href}>{c.value}</a>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )
+        }
+      </div>
+    </article>
+  </main>
+</BaseLayout>
+
+<style>
+  .post {
+    padding: 38px 40px;
+  }
+  @media (max-width: 640px) {
+    .post {
+      padding: 26px 22px;
+    }
+  }
+</style>

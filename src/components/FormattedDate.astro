@@ -1,0 +1,14 @@
+---
+interface Props {
+  date: Date;
+  short?: boolean;
+}
+const { date, short = false } = Astro.props;
+const iso = date.toISOString();
+const y = date.getFullYear();
+const m = date.getMonth() + 1;
+const d = date.getDate();
+const text = short ? `${y}/${m}/${d}` : `${y} 年 ${m} 月 ${d} 日`;
+---
+
+<time datetime={iso}>{text}</time>
