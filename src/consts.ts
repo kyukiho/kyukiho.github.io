@@ -18,6 +18,7 @@ export const NAV_LINKS = [
   { href: '/blog', label: '文章' },
   { href: '/archive', label: '归档' },
   { href: '/tags', label: '标签' },
+  { href: '/friends', label: '友链' },
   { href: '/about', label: '关于' },
 ];
 
@@ -26,7 +27,16 @@ export const SIDEBAR_LINKS = [
   { href: '/blog', label: '近期文章', icon: 'article' },
   { href: '/archive', label: '文章归档', icon: 'archive' },
   { href: '/tags', label: '标签分类', icon: 'tag' },
+  { href: '/friends', label: '友情链接', icon: 'globe' },
   { href: '/about', label: '关于网站', icon: 'smile' },
+];
+
+export const FRIEND_LINKS = [
+  {
+    name: 'julien 的博客',
+    description: '放编程笔记和折腾记录。',
+    href: 'https://www.julien.net.cn',
+  },
 ];
 
 // 社交链接（占位，后续替换为真实地址）

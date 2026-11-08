@@ -1,0 +1,346 @@
+---
+---
+
+<section class="music-player" aria-labelledby="music-title">
+  <div class="vinyl-stage" aria-hidden="true">
+    <div class="vinyl-record">
+      <img
+        class="record-label"
+        src="https://is1-ssl.mzstatic.com/image/thumb/Music/ab/e1/52/mzi.xrlznzgm.jpg/300x300bb.jpg"
+        alt=""
+        loading="lazy"
+      />
+      <span class="spindle"></span>
+    </div>
+    <span class="tonearm"></span>
+  </div>
+  <div class="track-info">
+    <div class="eyebrow">NOW PLAYING</div>
+    <div>
+      <h2 id="music-title">The Truth That You Leave</h2>
+      <p>Pianoboy</p>
+    </div>
+  </div>
+
+  <audio
+    class="audio-source"
+    src="/audio/the-truth-that-you-leave.mp3"
+    preload="metadata"
+    aria-hidden="true"
+    tabindex="-1"
+  ></audio>
+
+  <div class="player-controls">
+    <button class="play-button" type="button" aria-label="播放">
+      <svg class="play-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M8 5v14l11-7z" fill="currentColor" />
+      </svg>
+      <svg class="pause-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M7 5h4v14H7zm6 0h4v14h-4z" fill="currentColor" />
+      </svg>
+    </button>
+    <div class="timeline">
+      <input
+        class="progress"
+        type="range"
+        min="0"
+        max="0"
+        value="0"
+        step="0.1"
+        aria-label="播放进度"
+        disabled
+      />
+      <div class="time-labels">
+        <span class="current-time">0:00</span>
+        <span class="duration">--:--</span>
+      </div>
+    </div>
+  </div>
+  <p class="player-status" role="status" aria-live="polite"></p>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.music-player').forEach((player) => {
+    const audio = player.querySelector<HTMLAudioElement>('.audio-source');
+    const playButton = player.querySelector<HTMLButtonElement>('.play-button');
+    const progress = player.querySelector<HTMLInputElement>('.progress');
+    const currentTime = player.querySelector<HTMLElement>('.current-time');
+    const duration = player.querySelector<HTMLElement>('.duration');
+    const status = player.querySelector<HTMLElement>('.player-status');
+
+    if (!audio || !playButton || !progress || !currentTime || !duration || !status) return;
+
+    const formatTime = (seconds: number) => {
+      if (!Number.isFinite(seconds)) return '--:--';
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = Math.floor(seconds % 60);
+      return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+    };
+
+    const updateProgress = () => {
+      progress.value = String(audio.currentTime);
+      currentTime.textContent = formatTime(audio.currentTime);
+    };
+
+    playButton.addEventListener('click', () => {
+      if (audio.paused) {
+        audio.play().catch(() => {
+          status.textContent = '音频播放失败，请稍后重试。';
+        });
+      } else {
+        audio.pause();
+      }
+    });
+
+    audio.addEventListener('loadedmetadata', () => {
+      progress.max = String(audio.duration);
+      progress.disabled = false;
+      duration.textContent = formatTime(audio.duration);
+    });
+    audio.addEventListener('timeupdate', updateProgress);
+    audio.addEventListener('play', () => {
+      player.classList.add('is-playing');
+      playButton.setAttribute('aria-label', '暂停');
+      status.textContent = '';
+    });
+    audio.addEventListener('pause', () => {
+      player.classList.remove('is-playing');
+      playButton.setAttribute('aria-label', '播放');
+    });
+    audio.addEventListener('ended', () => {
+      audio.currentTime = 0;
+      updateProgress();
+    });
+    audio.addEventListener('error', () => {
+      status.textContent = '音频加载失败，请检查 MP3 文件是否可访问。';
+    });
+    progress.addEventListener('input', () => {
+      audio.currentTime = Number(progress.value);
+      updateProgress();
+    });
+  });
+</script>
+
+<style>
+  .music-player {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+    height: 100%;
+    padding: 20px 10px;
+  }
+  .vinyl-stage {
+    position: relative;
+    display: grid;
+    width: min(100%, 220px);
+    aspect-ratio: 1;
+    place-items: center;
+    align-self: center;
+    margin: 0 auto 2px;
+  }
+  .vinyl-record {
+    position: relative;
+    display: grid;
+    width: 88%;
+    aspect-ratio: 1;
+    place-items: center;
+    border: 1px solid rgb(255 255 255 / 12%);
+    border-radius: 50%;
+    background:
+      repeating-radial-gradient(
+        circle at center,
+        transparent 0,
+        transparent 3px,
+        rgb(255 255 255 / 8%) 3.5px,
+        transparent 4px,
+        transparent 7px
+      ),
+      radial-gradient(circle at 35% 30%, #454545, #171717 68%);
+    box-shadow:
+      0 14px 28px rgb(0 0 0 / 22%),
+      inset 0 0 0 7px rgb(0 0 0 / 18%),
+      inset 0 0 0 8px rgb(255 255 255 / 5%);
+    animation: spin 4s linear infinite;
+    animation-play-state: paused;
+  }
+  .is-playing .vinyl-record {
+    animation-play-state: running;
+  }
+  .record-label {
+    width: 38%;
+    aspect-ratio: 1;
+    border: 3px solid #252525;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 35%);
+  }
+  .spindle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 7px;
+    aspect-ratio: 1;
+    border: 1px solid rgb(255 255 255 / 65%);
+    border-radius: 50%;
+    background: #d7d1c5;
+    transform: translate(-50%, -50%);
+  }
+  .tonearm {
+    position: absolute;
+    top: 8%;
+    right: 3%;
+    width: 4px;
+    height: 40%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #777, #e1e1e1 45%, #777);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 35%);
+    transform: rotate(-28deg);
+    transform-origin: top center;
+    transition: transform 0.5s ease;
+  }
+  .tonearm::before {
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    width: 15px;
+    aspect-ratio: 1;
+    border: 3px solid #aeb0ac;
+    border-radius: 50%;
+    background: #373a38;
+    content: '';
+    transform: translateX(-50%);
+  }
+  .tonearm::after {
+    position: absolute;
+    bottom: -3px;
+    left: 50%;
+    width: 9px;
+    height: 14px;
+    border-radius: 2px;
+    background: #d5d2c8;
+    content: '';
+    transform: translateX(-50%);
+  }
+  .is-playing .tonearm {
+    transform: rotate(-8deg);
+  }
+  .track-info {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 0;
+    text-align: center;
+  }
+  .eyebrow {
+    color: var(--accent-strong);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+  }
+  .track-info h2 {
+    overflow: hidden;
+    margin: 0 0 4px;
+    color: var(--text);
+    font-size: 1rem;
+    line-height: 1.4;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .track-info p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+  }
+  .player-controls {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .play-button {
+    display: grid;
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: #202321;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 14%), 0 4px 12px rgb(0 0 0 / 14%);
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+  .play-button:hover {
+    background: var(--accent-strong);
+    transform: scale(1.05);
+  }
+  .play-button svg {
+    width: 23px;
+    height: 23px;
+  }
+  .pause-icon,
+  .is-playing .play-icon {
+    display: none;
+  }
+  .is-playing .pause-icon {
+    display: block;
+  }
+  .timeline {
+    flex: 1;
+    min-width: 0;
+  }
+  .progress {
+    display: block;
+    width: 100%;
+    height: 5px;
+    margin: 8px 0;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+  .progress:disabled {
+    cursor: wait;
+  }
+  .time-labels {
+    display: flex;
+    justify-content: space-between;
+    color: var(--text-muted);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .audio-source {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .player-status {
+    min-height: 1em;
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.76rem;
+  }
+  .play-button:focus-visible,
+  .progress:focus-visible {
+    outline: 2px solid var(--accent-strong);
+    outline-offset: 3px;
+  }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .vinyl-record {
+      animation: none;
+    }
+    .tonearm,
+    .play-button {
+      transition: none;
+    }
+  }
+</style>

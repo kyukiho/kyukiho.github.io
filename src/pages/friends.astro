@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { FRIEND_LINKS } from '../consts';
+---
+
+<BaseLayout title="友链" description="值得一逛的朋友们的博客">
+  <main class="page-main container">
+    <h1 class="page-title">友情链接</h1>
+    <p class="page-subtitle">记录值得一逛的朋友们。</p>
+
+    <ul class="friend-list">
+      {
+        FRIEND_LINKS.map((friend) => (
+          <li>
+            <a
+              class="friend-card glass"
+              href={friend.href}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span class="friend-avatar" aria-hidden="true">
+                {friend.name.charAt(0).toUpperCase()}
+              </span>
+              <span class="friend-info">
+                <span class="friend-name">{friend.name}</span>
+                <span class="friend-description">{friend.description}</span>
+                <span class="friend-url">{new URL(friend.href).hostname}</span>
+              </span>
+              <span class="friend-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </main>
+</BaseLayout>
+
+<style>
+  .friend-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 16px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .friend-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-height: 120px;
+    padding: 22px;
+    color: var(--text);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+  .friend-card:hover {
+    color: var(--text);
+    border-color: var(--accent);
+    transform: translateY(-3px);
+  }
+  .friend-avatar {
+    display: grid;
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    place-items: center;
+    border-radius: 16px;
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    font-size: 1.35rem;
+    font-weight: 700;
+  }
+  .friend-info {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    flex-direction: column;
+  }
+  .friend-name {
+    font-weight: 700;
+  }
+  .friend-description,
+  .friend-url {
+    overflow: hidden;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .friend-arrow {
+    align-self: flex-start;
+    color: var(--text-muted);
+  }
+</style>
