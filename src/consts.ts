@@ -37,6 +37,11 @@ export const FRIEND_LINKS = [
     description: '放编程笔记和折腾记录。',
     href: 'https://www.julien.net.cn',
   },
+  {
+    name: 'futurefe414',
+    description: '个人博客。',
+    href: 'https://futurefe414.github.io',
+  },
 ];
 
 // 社交链接（占位，后续替换为真实地址）
